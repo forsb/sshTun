@@ -14,15 +14,18 @@ public class Connection {
     private JSch jsch;
     Host host;
 
+    // Constructor
     public Connection(Host host) {
         this.jsch = new JSch();
         this.host = host;
     }
 
+    // Execute remote command
     public void Execute(String command) {
         new RemoteExecuteTask().execute(command);
     }
 
+    // Open port forward
     public void PortForward (int lport, String rhost, int rport) {
         LP lp = new LP(lport, rhost, rport);
         new PortForwardTask().execute(lp);
@@ -36,6 +39,7 @@ public class Connection {
     public void onPortForwardSuccess(int assinged_port) { }
 
     public void onPortForwardFail(Exception e) { }
+
 
     private Command executeCommand(String command) throws Exception {
         Command c = new Command(command);
@@ -98,6 +102,10 @@ public class Connection {
         return session.setPortForwardingL(lport, rhost, rport);
     }
 
+
+    /*
+     * Async task to execute a command on the remote host
+     */
     private class RemoteExecuteTask extends AsyncTask<String, Void, Command> {
 
         private Exception except = null;
@@ -122,6 +130,10 @@ public class Connection {
         }
     }
 
+
+    /*
+     * Async task to open port
+     */
     private class PortForwardTask extends AsyncTask<LP, Void, Integer> {
 
         private Exception except = null;
@@ -141,10 +153,10 @@ public class Connection {
         @Override
         protected void onPostExecute(Integer assinged_port) {
             if (except == null) {
-                Log.i("JSCH", "Local forward localhost:" + assinged_port + " -> " + lp.rhost + ":" + lp.rport);
+                Log.i("SSHTUN", "Local forward localhost:" + assinged_port + " -> " + lp.rhost + ":" + lp.rport);
                 onPortForwardSuccess(assinged_port);
             } else {
-                Log.i("JSCH", "Local forward failed.");
+                Log.i("SSHTUN", "Local forward failed.");
                 onPortForwardFail(except);
             }
         }

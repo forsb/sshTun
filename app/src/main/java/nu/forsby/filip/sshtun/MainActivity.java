@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setOnclickListeners();
+
         this.rootView = findViewById(R.id.coordinatorLayout);
 
         final TextView tView = findViewById(R.id.textView);
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onExecuteFail(Exception e) {
                 e.printStackTrace();
-                Log.e("JSCH", e.getClass().getName().toString() + " - " + e.getMessage().toString());
+                Log.e("SSHTUN", e.getClass().getName().toString() + " - " + e.getMessage().toString());
             }
 
             @Override
@@ -84,12 +86,43 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPortForwardFail(Exception e) {
                 e.printStackTrace();
-                Log.e("JSCH", e.getClass().getName().toString() + " - " + e.getMessage().toString());
+                Log.e("SSHTUN", e.getClass().getName().toString() + " - " + e.getMessage().toString());
                 showSnackbar("Failed to establish connection");
             }
         };
 
-        // --- Execute command ---
+
+        // --- Autocomplete ---
+        String[] arr = {
+                "Paries,France",
+                "PA,United States",
+                "Parana,Brazil",
+                "Padua,Italy",
+                "Pasadena,CA,United States"};
+
+        AutoCompleteTextView autocomplete = findViewById(R.id.actv);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                (this, android.R.layout.select_dialog_item, arr);
+
+        autocomplete.setThreshold(2);
+        autocomplete.setAdapter(adapter);
+
+    }
+
+    private void setOnclickListeners() {
+
+        // Dropdown menu
+        ImageButton down = findViewById(R.id.down);
+        down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AutoCompleteTextView autocomplete = findViewById(R.id.actv);
+                autocomplete.showDropDown();
+            }
+        });
+
+        // Execute command
         ImageButton butt = findViewById(R.id.button);
         butt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,34 +133,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        // --- Local port forward ---
+        // Local port forward
         ImageButton portFwBtn = findViewById(R.id.button23);
         portFwBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                con.PortForward(55555, "127.0.0.1", 8123);
-            }
-        });
-
-        // --- Autocomplete ---
-        String[] arr = {"Paries,France", "PA,United States","Parana,Brazil",
-                "Padua,Italy", "Pasadena,CA,United States"};
-
-        AutoCompleteTextView autocomplete = findViewById(R.id.actv);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                (this, android.R.layout.select_dialog_item, arr);
-
-        autocomplete.setThreshold(2);
-        autocomplete.setAdapter(adapter);
-
-        ImageButton down = findViewById(R.id.down);
-        down.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
-                AutoCompleteTextView autocomplete = findViewById(R.id.actv);
-                autocomplete.showDropDown();
+                con.PortForward(55555, "127.0.0.1", 8123);
             }
         });
     }
