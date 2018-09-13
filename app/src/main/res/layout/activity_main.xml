@@ -10,185 +10,95 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp">
+            android:layout_marginRight="15sp"
+            android:layout_marginLeft="15sp" >
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/cardView"
-                android:layout_width="match_parent"
+            <TextView
                 android:layout_height="wrap_content"
-                android:layout_margin="10sp">
+                android:layout_width="wrap_content"
+                android:text="Host"
+                android:textSize="25sp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:orientation="vertical">
+                    android:text="User" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="orangeB" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Host" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="192.168.1.101" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Port" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="22" />
+
+            </LinearLayout>
 
 
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/cardHead"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:autoSizeTextType="uniform"
-                        android:freezesText="true"
-                        android:textAlignment="center" />
-
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="2dp"
-                        android:layout_margin="10dp"
-                        android:background="#f5f5f5" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <AutoCompleteTextView
-                            android:id="@+id/actv"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".65"
-                            android:hint="Command"
-                            android:padding="15dp" />
-
-                        <ImageButton
-                            android:id="@+id/down"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@null"
-                            android:src="@drawable/ic_expand_more_black_24dp" />
-
-                        <ImageButton
-                            android:id="@+id/button"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginLeft="20dp"
-                            android:background="@null"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_send_black_24dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/sadsd"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".80"
-                            android:paddingLeft="10dp"
-                            android:text="History0" />
-
-                        <ImageButton
-                            android:id="@+id/button2"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_weight=".10"
-                            android:background="@null"
-                            android:src="@drawable/ic_receipt_black_24dp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/sadsd2"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".80"
-                            android:paddingLeft="10dp"
-                            android:text="History1" />
-
-                        <ImageButton
-                            android:id="@+id/button3"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_weight=".10"
-                            android:background="@null"
-                            android:src="@drawable/ic_receipt_black_24dp" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="2dp"
-                        android:layout_margin="10dp"
-                        android:background="#f5f5f5" />
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/sadsd32"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".80"
-                            android:paddingLeft="10dp"
-                            android:text="port:url:port" />
-
-                        <ImageButton
-                            android:id="@+id/button23"
-                            android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_weight=".10"
-                            android:background="@null"
-                            android:src="@drawable/ic_vpn_lock_black_24dp" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="2dp"
-                        android:layout_margin="10dp"
-                        android:background="#f5f5f5" />
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <ImageButton
-                            android:id="@+id/button332"
-                            android:layout_width="0dp"
-                            android:layout_height="35dp"
-                            android:layout_weight=".10"
-                            android:background="@null"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_add_circle_outline_black_24dp" />
-
-                        <ImageButton
-                            android:id="@+id/button31232"
-                            android:layout_width="0dp"
-                            android:layout_height="35dp"
-                            android:layout_weight=".10"
-                            android:background="@null"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/ic_settings_black_24dp" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
 
             <ProgressBar
                 android:id="@+id/progressBar"
