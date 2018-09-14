@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 //        });
 //
 //        // Execute command
-//        ImageButton butt = findViewById(R.id.button);
+//        ImageButton butt = findViewById(R.id.button_default);
 //        butt.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {

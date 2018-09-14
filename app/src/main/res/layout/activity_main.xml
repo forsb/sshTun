@@ -372,13 +372,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Connect"
-                android:layout_marginHorizontal="15dp"/>
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/button_effect"
+                android:textColor="#FAFAFA"/>
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Open in browser"
-                android:layout_marginHorizontal="15dp"/>
 
             <ProgressBar
                 android:id="@+id/progressBar"
