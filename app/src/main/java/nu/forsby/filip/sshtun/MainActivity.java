@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView tView = findViewById(R.id.textView);
         tView.setTypeface(Typeface.MONOSPACE);
 
-        TextView cHead = findViewById(R.id.cardHead);
+//        TextView cHead = findViewById(R.id.cardHead);
 
         String headStr = "<font color='#CCC65'>" +
                 "ha" +
@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
                 "22" +
                 "</font>";
 
-        cHead.setText(Html.fromHtml(headStr));
-        TextViewCompat.setAutoSizeTextTypeWithDefaults(cHead, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+//        cHead.setText(Html.fromHtml(headStr));
+//        TextViewCompat.setAutoSizeTextTypeWithDefaults(cHead, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
 
         // --- Set up connection ---
         Host host = new Host("10.20.30.58", "ha", "qweqwe", 22);
@@ -100,85 +100,51 @@ public class MainActivity extends AppCompatActivity {
                 "Padua,Italy",
                 "Pasadena,CA,United States"};
 
-        AutoCompleteTextView autocomplete = findViewById(R.id.actv);
+//        AutoCompleteTextView autocomplete = findViewById(R.id.actv);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>
                 (this, android.R.layout.select_dialog_item, arr);
 
-        autocomplete.setThreshold(2);
-        autocomplete.setAdapter(adapter);
+//        autocomplete.setThreshold(2);
+//        autocomplete.setAdapter(adapter);
 
     }
 
     private void setOnclickListeners() {
 
-        // Dropdown menu
-        ImageButton down = findViewById(R.id.down);
-        down.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AutoCompleteTextView autocomplete = findViewById(R.id.actv);
-                autocomplete.showDropDown();
-            }
-        });
+//        // Dropdown menu
+//        ImageButton down = findViewById(R.id.down);
+//        down.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AutoCompleteTextView autocomplete = findViewById(R.id.actv);
+//                autocomplete.showDropDown();
+//            }
+//        });
+//
+//        // Execute command
+//        ImageButton butt = findViewById(R.id.button);
+//        butt.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                EditText eText = findViewById(R.id.actv);
+//                con.Execute(eText.getText().toString());
+//                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+//            }
+//        });
 
-        // Execute command
-        ImageButton butt = findViewById(R.id.button);
-        butt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText eText = findViewById(R.id.actv);
-                con.Execute(eText.getText().toString());
-                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-            }
-        });
-
-        // Local port forward
-        ImageButton portFwBtn = findViewById(R.id.button23);
-        portFwBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                con.PortForward(55555, "127.0.0.1", 8123);
-            }
-        });
+//        // Local port forward
+//        ImageButton portFwBtn = findViewById(R.id.button23);
+//        portFwBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                con.PortForward(55555, "127.0.0.1", 8123);
+//            }
+//        });
     }
 
     private void showSnackbar(String message) {
         Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).show();
-    }
-
-    private class HostCard extends CardView {
-
-        Host host;
-        LinearLayout wrapper;
-        TextView header;
-        LinearLayout settings;
-
-        public HostCard (Context context, Host host) {
-            super(context);
-
-            this.host = host;
-            this.wrapper = new LinearLayout(context);
-            this.header = new TextView(context);
-            this.settings = new LinearLayout(context);
-
-            String headStr = "<font color='#CCC65'>" +
-                    host.user +
-                    "</font> @ <font color='#29B6F6'>" +
-                    host.host +
-                    "</font> : <font color='#FFA726'>" +
-                    host.port +
-                    "</font>";
-
-            header.setText(Html.fromHtml(headStr));
-
-            settings.setOrientation(LinearLayout.HORIZONTAL);
-            settings.setGravity(Gravity.CENTER);
-
-            wrapper.setOrientation(LinearLayout.VERTICAL);
-            wrapper.addView(header);
-            this.addView(wrapper);
-        }
     }
 
 }
