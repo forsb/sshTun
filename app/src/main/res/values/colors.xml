@@ -7,4 +7,9 @@
     <color name="blue400">#29B6F6</color>
     <color name="orange400">#FFA726</color>
 
+    <color name="gray50">#FAFAFA</color>
+    <color name="gray100">#F5F5F5</color>
+    <color name="gray200">#EEEEEE</color>
+
+    <color name="white">#FFFFFF</color>
 </resources>

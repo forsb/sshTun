@@ -1,33 +1,14 @@
 package nu.forsby.filip.sshtun;
 
-import android.content.Context;
-import android.graphics.Typeface;
-import android.os.AsyncTask;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.design.widget.Snackbar;
-import android.text.Html;
 import android.util.Log;
 
-import com.jcraft.jsch.*;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import android.util.Base64;
-import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,34 +22,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setOnclickListeners();
+        inflateViews();
 
         this.rootView = findViewById(R.id.coordinatorLayout);
 
-        final TextView tView = findViewById(R.id.textView);
-        tView.setTypeface(Typeface.MONOSPACE);
 
-//        TextView cHead = findViewById(R.id.cardHead);
-
-        String headStr = "<font color='#CCC65'>" +
-                "ha" +
-                "</font> @ <font color='#29B6F6'>" +
-                "10.20.30.58" +
-                "</font> : <font color='#FFA726'>" +
-                "22" +
-                "</font>";
-
-//        cHead.setText(Html.fromHtml(headStr));
-//        TextViewCompat.setAutoSizeTextTypeWithDefaults(cHead, TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
 
         // --- Set up connection ---
         Host host = new Host("10.20.30.58", "ha", "qweqwe", 22);
         con = new Connection(host) {
             @Override
             public void onExecuteSuccess(Command command) {
-                findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
-                tView.setText("");
+//                findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+//                tView.setText("");
                 for (String str : command.output) {
-                    tView.append(str);
+//                    tView.append(str);
                 }
             }
 
@@ -110,6 +78,33 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void inflateViews() {
+        LinearLayout rootLinearLayout = findViewById(R.id.rootLinearLayout);
+
+        View sshHeaderView = getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false);
+        ((TextView) sshHeaderView.findViewById(R.id.header)).setText("SSH CONNECTION");
+        rootLinearLayout.addView(sshHeaderView);
+//        ((TextView) getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, true).findViewById(R.id.heading)).setText("SSH CONNECTION");
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "User", "root").view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Host", "192.168.1.101").view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Port", "22").view);
+
+        View localPortHeaderView = getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false);
+        ((TextView) localPortHeaderView.findViewById(R.id.header)).setText("LOCAL PORT PARAMETERS");
+        rootLinearLayout.addView(localPortHeaderView);
+//        ((TextView) getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, true).findViewById(R.id.heading)).setText("LOCAL PORT PARAMETERS");
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Local Port", "55555").view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Remote Host", "www.example.com").view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Remote Port", "80").view);
+
+        View securityHeaderView = getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false);
+        ((TextView) securityHeaderView.findViewById(R.id.header)).setText("SECURITY SETTINGS");
+        rootLinearLayout.addView(securityHeaderView);
+//        ((TextView) getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false).findViewById(R.id.heading)).setText("SECURITY");
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Password", "*none*").view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Private Key", "private.key").view);
+    }
+
     private void setOnclickListeners() {
 
 //        // Dropdown menu
@@ -147,4 +142,25 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).show();
     }
 
+    private class ListItem {
+
+        public View view;
+
+        public ListItem(ViewGroup rootView, String tag, String value) {
+            view = getLayoutInflater().inflate(R.layout.frame_list_item, rootView, false);
+
+            TextView tagView = view.findViewById(R.id.tag);
+            tagView.setText(tag);
+
+            TextView valueView = view.findViewById(R.id.value);
+            valueView.setText(value);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showSnackbar("You clicked " + ((TextView)view.findViewById(R.id.tag)).getText());
+                }
+            });
+        }
+    }
 }
