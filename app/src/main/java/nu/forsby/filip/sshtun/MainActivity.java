@@ -64,25 +64,22 @@ public class MainActivity extends AppCompatActivity {
         View sshHeaderView = getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false);
         ((TextView) sshHeaderView.findViewById(R.id.header)).setText("SSH CONNECTION");
         rootLinearLayout.addView(sshHeaderView);
-//        ((TextView) getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, true).findViewById(R.id.heading)).setText("SSH CONNECTION");
         rootLinearLayout.addView(new ListItem(rootLinearLayout, "User", sharedPref.getString("User", "")).view);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Host", "192.168.1.101").view);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Port", "22").view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Host", sharedPref.getString("Host", "")).view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Port", sharedPref.getString("Port", "")).view);
 
         View localPortHeaderView = getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false);
         ((TextView) localPortHeaderView.findViewById(R.id.header)).setText("LOCAL PORT PARAMETERS");
         rootLinearLayout.addView(localPortHeaderView);
-//        ((TextView) getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, true).findViewById(R.id.heading)).setText("LOCAL PORT PARAMETERS");
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Local Port", "55555").view);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Remote Host", "www.example.com").view);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Remote Port", "80").view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Local Port", sharedPref.getString("Local Port", "")).view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Remote Host", sharedPref.getString("Remote Host", "")).view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Remote Port", sharedPref.getString("Remote Port", "")).view);
 
         View securityHeaderView = getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false);
         ((TextView) securityHeaderView.findViewById(R.id.header)).setText("SECURITY SETTINGS");
         rootLinearLayout.addView(securityHeaderView);
-//        ((TextView) getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false).findViewById(R.id.heading)).setText("SECURITY");
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Password", "*none*").view);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Private Key", "private.key").view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Password", sharedPref.getString("Password", "")).view);
+        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Private Key", sharedPref.getString("Private Key", "")).view);
     }
 
     private void setOnclickListeners() {
@@ -114,13 +111,12 @@ public class MainActivity extends AppCompatActivity {
             valueView.setText(value);
 
             view.setOnClickListener(new View.OnClickListener() {
-                String tag;
-                View dialogView;
 
                 @Override
                 public void onClick(View view) {
-                    tag = ((TextView)view.findViewById(R.id.tag)).getText().toString();
-                    dialogView =  MainActivity.this.getLayoutInflater().inflate(R.layout.frame_dialog_input, null);
+                    final TextView valueView = view.findViewById(R.id.value);
+                    final String tag = ((TextView) view.findViewById(R.id.tag)).getText().toString();
+                    final View dialogView =  MainActivity.this.getLayoutInflater().inflate(R.layout.frame_dialog_input, null);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder
@@ -129,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
                             .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
-                                    sharedPref.edit().putString(tag, ((EditText) dialogView.findViewById(R.id.dialogText)).getText().toString());
+                                    String dialogTextValue = ((EditText) dialogView.findViewById(R.id.dialogText)).getText().toString();
+                                    sharedPref.edit().putString(tag, dialogTextValue).commit();
+                                    valueView.setText(dialogTextValue);
                                     dialog.cancel();
                                 }
                             })
