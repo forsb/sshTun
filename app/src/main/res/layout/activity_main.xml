@@ -8,36 +8,55 @@
     android:background="#F5F5F5"
     tools:context="nu.forsby.filip.sshtun.MainActivity">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/connectButtonWrapper">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/rootLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+            </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+        <FrameLayout
+            android:id="@+id/connectButtonWrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/rootLinearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray300">
 
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/connectButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Connect"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginVertical="15dp"
+                android:background="@drawable/button_effect"
+                android:textColor="#FAFAFA"
+                android:elevation="5dp"/>
+        </FrameLayout>
 
-        <Button
-            android:id="@+id/connectButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Connect"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginVertical="15dp"
-            android:background="@drawable/button_effect"
-            android:textColor="#FAFAFA"/>
 
-        </LinearLayout>
-
-    </ScrollView>
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

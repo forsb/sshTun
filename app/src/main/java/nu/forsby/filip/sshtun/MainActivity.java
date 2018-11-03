@@ -33,28 +33,8 @@ public class MainActivity extends AppCompatActivity {
         rootView = findViewById(R.id.coordinatorLayout);
         sharedPref = getPreferences(Context.MODE_PRIVATE);
 
-        sharedPref.edit().putString("User", "root").commit();
-
         setOnclickListeners();
         inflateViews();
-
-
-
-        // --- Set up connection ---
-        Host host = new Host("10.20.30.58", "ha", "qweqwe", 22);
-        con = new Connection(host) {
-            @Override
-            public void onPortForwardSuccess(int assigned_port) {
-                showSnackbar("Established connection on local port " + assigned_port);
-            }
-
-            @Override
-            public void onPortForwardFail(Exception e) {
-                e.printStackTrace();
-                Log.e("SSHTUN", e.getClass().getName().toString() + " - " + e.getMessage().toString());
-                showSnackbar("Failed to establish connection");
-            }
-        };
 
     }
 
@@ -88,7 +68,30 @@ public class MainActivity extends AppCompatActivity {
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                con.PortForward(55555, "127.0.0.1", 8123);
+                Host host = new Host(
+                        sharedPref.getString("Host", ""),
+                        sharedPref.getString("User", ""),
+                        sharedPref.getString("Password", ""),
+                        Integer.parseInt(sharedPref.getString("Port", "")));
+
+                con = new Connection(host) {
+                    @Override
+                    public void onPortForwardSuccess(int assigned_port) {
+                        showSnackbar("Established connection on local port " + assigned_port);
+                    }
+
+                    @Override
+                    public void onPortForwardFail(Exception e) {
+                        e.printStackTrace();
+                        Log.e("SSHTUN", e.getClass().getName().toString() + " - " + e.getMessage().toString());
+                        showSnackbar("Failed to establish connection");
+                    }
+                };
+
+                con.PortForward(
+                        Integer.parseInt(sharedPref.getString("Local Port", "")),
+                        sharedPref.getString("Remote Host", ""),
+                        Integer.parseInt(sharedPref.getString("Remote Port", "")));
             }
         });
     }
