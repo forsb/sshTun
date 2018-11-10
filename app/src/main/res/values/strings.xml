@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">sshTun</string>
+
+    <string name="user">User</string>
+    <string name="host">Host</string>
+    <string name="port">Port</string>
+
+    <string name="local_port">Local Port</string>
+    <string name="remote_host">Remote Host</string>
+    <string name="remote_port">Remote Port</string>
+
+    <string name="password">Password</string>
+    <string name="private_key">Private Key</string>
 </resources>

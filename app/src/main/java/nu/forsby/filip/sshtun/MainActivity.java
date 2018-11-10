@@ -39,27 +39,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void inflateViews() {
-        LinearLayout rootLinearLayout = findViewById(R.id.rootLinearLayout);
+        addHeading("SSH CONNECTION");
+        addOption(getString(R.string.user));
+        addOption(getString(R.string.host));
+        addOption(getString(R.string.port));
 
-        View sshHeaderView = getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false);
-        ((TextView) sshHeaderView.findViewById(R.id.header)).setText("SSH CONNECTION");
-        rootLinearLayout.addView(sshHeaderView);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "User", sharedPref.getString("User", "")).view);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Host", sharedPref.getString("Host", "")).view);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Port", sharedPref.getString("Port", "")).view);
+        addHeading("LOCAL PORT PARAMETERS");
+        addOption(getString(R.string.local_port));
+        addOption(getString(R.string.remote_host));
+        addOption(getString(R.string.remote_port));
 
-        View localPortHeaderView = getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false);
-        ((TextView) localPortHeaderView.findViewById(R.id.header)).setText("LOCAL PORT PARAMETERS");
-        rootLinearLayout.addView(localPortHeaderView);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Local Port", sharedPref.getString("Local Port", "")).view);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Remote Host", sharedPref.getString("Remote Host", "")).view);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Remote Port", sharedPref.getString("Remote Port", "")).view);
-
-        View securityHeaderView = getLayoutInflater().inflate(R.layout.frame_list_heading, rootLinearLayout, false);
-        ((TextView) securityHeaderView.findViewById(R.id.header)).setText("SECURITY SETTINGS");
-        rootLinearLayout.addView(securityHeaderView);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Password", sharedPref.getString("Password", "")).view);
-        rootLinearLayout.addView(new ListItem(rootLinearLayout, "Private Key", sharedPref.getString("Private Key", "")).view);
+        addHeading("SECURITY SETTINGS");
+        addOption(getString(R.string.password));
+        addOption(getString(R.string.private_key));
     }
 
     private void setOnclickListeners() {
@@ -83,7 +75,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onPortForwardFail(Exception e) {
                         e.printStackTrace();
-                        Log.e("SSHTUN", e.getClass().getName().toString() + " - " + e.getMessage().toString());
+                        Log.e(
+                                "SSHTUN",
+                                e.getClass().getName().toString() +
+                                        " - " +
+                                        e.getMessage().toString());
                         showSnackbar("Failed to establish connection");
                     }
                 };
@@ -94,6 +90,24 @@ public class MainActivity extends AppCompatActivity {
                         Integer.parseInt(sharedPref.getString("Remote Port", "")));
             }
         });
+    }
+
+    private void addHeading(String name) {
+        LinearLayout rootLinearLayout = findViewById(R.id.rootLinearLayout);
+        View headerView = getLayoutInflater().inflate(
+                R.layout.frame_list_heading,
+                rootLinearLayout,
+                false);
+        ((TextView) headerView.findViewById(R.id.header)).setText(name);
+        rootLinearLayout.addView(headerView);
+    }
+
+    private void addOption(String name) {
+        LinearLayout rootLinearLayout = findViewById(R.id.rootLinearLayout);
+        rootLinearLayout.addView(new ListItem(
+                rootLinearLayout,
+                name,
+                sharedPref.getString(name, "")).view);
     }
 
     private void showSnackbar(String message) {
@@ -119,7 +133,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     final TextView valueView = view.findViewById(R.id.value);
                     final String tag = ((TextView) view.findViewById(R.id.tag)).getText().toString();
-                    final View dialogView =  MainActivity.this.getLayoutInflater().inflate(R.layout.frame_dialog_input, null);
+                    final View dialogView =
+                            MainActivity.this.getLayoutInflater().inflate(
+                                    R.layout.frame_dialog_input, null);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder
@@ -128,7 +144,8 @@ public class MainActivity extends AppCompatActivity {
                             .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int id) {
-                                    String dialogTextValue = ((EditText) dialogView.findViewById(R.id.dialogText)).getText().toString();
+                                    EditText dialogText = dialogView.findViewById(R.id.dialogText);
+                                    String dialogTextValue = dialogText.getText().toString();
                                     sharedPref.edit().putString(tag, dialogTextValue).commit();
                                     valueView.setText(dialogTextValue);
                                     dialog.cancel();

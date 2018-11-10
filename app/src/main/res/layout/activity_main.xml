@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorLayout"
@@ -18,23 +19,14 @@
             android:layout_above="@+id/connectButtonWrapper">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-            <LinearLayout
                 android:id="@+id/rootLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-
-            </LinearLayout>
-
             </LinearLayout>
 
         </ScrollView>
-
 
         <FrameLayout
             android:id="@+id/connectButtonWrapper"
@@ -42,7 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/gray300">
-
 
             <Button
                 android:id="@+id/connectButton"
@@ -54,8 +45,8 @@
                 android:background="@drawable/button_effect"
                 android:textColor="#FAFAFA"
                 android:elevation="5dp"/>
-        </FrameLayout>
 
+        </FrameLayout>
 
     </RelativeLayout>
 
