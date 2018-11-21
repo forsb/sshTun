@@ -1,19 +1,24 @@
 package nu.forsby.filip.sshtun;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+
         context = getApplicationContext();
         rootView = findViewById(R.id.coordinatorLayout);
         sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -36,6 +44,34 @@ public class MainActivity extends AppCompatActivity {
         setOnclickListeners();
         inflateViews();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                return true;
+
+            case R.id.action_about:
+                // User chose the "About" action, mark the current item
+                // as a favorite...
+                openAlertDialog(R.string.about_title, R.string.about_message);
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
     }
 
     private void inflateViews() {
@@ -59,7 +95,11 @@ public class MainActivity extends AppCompatActivity {
         Button connectButton = findViewById(R.id.connectButton);
         connectButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
+                ProgressBar progressBar = findViewById(R.id.progressbar);
+                progressBar.setVisibility(View.VISIBLE);
+                view.setEnabled(false);
+
                 Host host = new Host(
                         sharedPref.getString("Host", ""),
                         sharedPref.getString("User", ""),
@@ -69,11 +109,19 @@ public class MainActivity extends AppCompatActivity {
                 con = new Connection(host) {
                     @Override
                     public void onPortForwardSuccess(int assigned_port) {
+                        ProgressBar progressBar = findViewById(R.id.progressbar);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        view.setEnabled(true);
+
                         showSnackbar("Established connection on local port " + assigned_port);
                     }
 
                     @Override
                     public void onPortForwardFail(Exception e) {
+                        ProgressBar progressBar = findViewById(R.id.progressbar);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        view.setEnabled(true);
+
                         e.printStackTrace();
                         Log.e(
                                 "SSHTUN",
@@ -112,6 +160,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void showSnackbar(String message) {
         Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).show();
+    }
+
+    private void openAlertDialog(int title, int message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.cancel();
+                    }
+                });
+
+        builder.show();
     }
 
     private class ListItem {
