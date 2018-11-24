@@ -181,9 +181,11 @@ public class MainActivity extends AppCompatActivity {
     private class ListItem {
 
         public View view;
+        private String tag;
 
         public ListItem(ViewGroup parentView, String tag, String value) {
-            view = getLayoutInflater().inflate(R.layout.frame_list_item, parentView, false);
+            this.view = getLayoutInflater().inflate(R.layout.frame_list_item, parentView, false);
+            this.tag = tag;
 
             TextView tagView = view.findViewById(R.id.tag);
             tagView.setText(tag);
@@ -191,40 +193,70 @@ public class MainActivity extends AppCompatActivity {
             TextView valueView = view.findViewById(R.id.value);
             valueView.setText(value);
 
-            view.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View view) {
-                    final TextView valueView = view.findViewById(R.id.value);
-                    final String tag = ((TextView) view.findViewById(R.id.tag)).getText().toString();
-                    final View dialogView =
-                            MainActivity.this.getLayoutInflater().inflate(
-                                    R.layout.frame_dialog_input, null);
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder
-                            .setTitle(tag)
-                            .setView(dialogView)
-                            .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int id) {
-                                    EditText dialogText = dialogView.findViewById(R.id.dialogText);
-                                    String dialogTextValue = dialogText.getText().toString();
-                                    sharedPref.edit().putString(tag, dialogTextValue).commit();
-                                    valueView.setText(dialogTextValue);
-                                    dialog.cancel();
-                                }
-                            })
-                            .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-                    builder.show();
-                }
-            });
+            if (tag.compareTo(getString(R.string.private_key)) == 0)
+            {
+                view.setOnClickListener(PrivateKeyPicker);
+            } else {
+                view.setOnClickListener(SimpleValuePicker);
+            }
         }
+
+        View.OnClickListener PrivateKeyPicker = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final View dialogView =
+                        MainActivity.this.getLayoutInflater().inflate(
+                                R.layout.frame_dialog_private_key, null);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder
+                        .setTitle(ListItem.this.tag)
+                        .setView(dialogView)
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                builder.show();
+            }
+        };
+
+        View.OnClickListener SimpleValuePicker = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final TextView valueView = view.findViewById(R.id.value);
+                final View dialogView =
+                        MainActivity.this.getLayoutInflater().inflate(
+                                R.layout.frame_dialog_input, null);
+
+                EditText dialogText = dialogView.findViewById(R.id.dialogText);
+                dialogText.setText(valueView.getText());
+                dialogText.setSelection(dialogText.getText().length());
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder
+                        .setTitle(ListItem.this.tag)
+                        .setView(dialogView)
+                        .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                EditText dialogText = dialogView.findViewById(R.id.dialogText);
+                                String dialogTextValue = dialogText.getText().toString();
+                                sharedPref.edit().putString(ListItem.this.tag, dialogTextValue).commit();
+                                valueView.setText(dialogTextValue);
+                                dialog.cancel();
+                            }
+                        })
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                builder.show();
+            }
+        };
     }
 }
