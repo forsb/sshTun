@@ -8,31 +8,63 @@ import com.jcraft.jsch.*;
 public class Connection {
 
     private JSch jsch;
-    Host host;
+
+    String host;
+    String user;
+    int port;
+
+    String password;
+    byte[] privateKey;
+    String keyFileName;
+
+    int lport;
+    String rhost;
+    int rport;
+
 
     // Constructor
-    public Connection(Host host) {
+    public Connection() {
         this.jsch = new JSch();
+    }
+
+    public Connection(String host,
+                      String user,
+                      int port,
+                      int lport,
+                      String rhost,
+                      int rport) {
         this.host = host;
+        this.user = user;
+        this.port = port;
+
+        this.lport = lport;
+        this.rhost = rhost;
+        this.rport = rport;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     // Open port forward
-    public void PortForward (int lport, String rhost, int rport) {
-        LP lp = new LP(lport, rhost, rport);
-        new PortForwardTask().execute(lp);
+    public void PortForward () {
+        new PortForwardTask().execute(0);
     }
 
     public void onPortForwardSuccess(int assinged_port) { }
 
     public void onPortForwardFail(Exception e) { }
 
-    private int portForward(int lport, String rhost, int rport) throws Exception {
-        Session session = jsch.getSession(host.user, host.host, host.port);
+    private int portForward() throws Exception {
+        Session session = jsch.getSession(user, host, port);
 
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
-        session.setPassword(host.passwd);
+
+        if (password != null) {
+            session.setPassword(password);
+        }
 
         session.connect();
         return session.setPortForwardingL(lport, rhost, rport);
@@ -41,16 +73,14 @@ public class Connection {
     /*
      * Async task to open port
      */
-    private class PortForwardTask extends AsyncTask<LP, Void, Integer> {
+    private class PortForwardTask extends AsyncTask<Integer, Void, Integer> {
 
         private Exception except = null;
-        private LP lp;
 
         @Override
-        protected Integer doInBackground(LP... lps) {
-            lp = lps[0];
+        protected Integer doInBackground(Integer... a) {
             try {
-                return portForward(lp.lport, lp.rhost, lp.rport);
+                return portForward();
             } catch (Exception e) {
                 except = e;
                 return -1;
@@ -60,24 +90,12 @@ public class Connection {
         @Override
         protected void onPostExecute(Integer assinged_port) {
             if (except == null) {
-                Log.i("SSHTUN", "Local forward localhost:" + assinged_port + " -> " + lp.rhost + ":" + lp.rport);
+                Log.i("SSHTUN", "Local forward localhost:" + assinged_port);
                 onPortForwardSuccess(assinged_port);
             } else {
                 Log.i("SSHTUN", "Local forward failed.");
                 onPortForwardFail(except);
             }
-        }
-    }
-
-    private class LP {
-        int lport;
-        String rhost;
-        int rport;
-
-        public LP (int lport, String rhost, int rport) {
-            this.lport = lport;
-            this.rhost = rhost;
-            this.rport = rport;
         }
     }
 }

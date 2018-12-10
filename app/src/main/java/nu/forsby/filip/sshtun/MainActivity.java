@@ -1,10 +1,13 @@
 package nu.forsby.filip.sshtun;
 
+import android.Manifest;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -21,7 +24,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+
 public class MainActivity extends AppCompatActivity {
+
+    public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1337;
 
     SharedPreferences sharedPref;
     Context context;
@@ -40,6 +49,32 @@ public class MainActivity extends AppCompatActivity {
         context = getApplicationContext();
         rootView = findViewById(R.id.coordinatorLayout);
         sharedPref = getPreferences(Context.MODE_PRIVATE);
+
+        con = new Connection() {
+            @Override
+            public void onPortForwardSuccess(int assigned_port) {
+                ProgressBar progressBar = findViewById(R.id.progressbar);
+                progressBar.setVisibility(View.INVISIBLE);
+                ((Button)findViewById(R.id.connectButton)).setEnabled(true);
+
+                showSnackbar("Established connection on local port " + assigned_port);
+            }
+
+            @Override
+            public void onPortForwardFail(Exception e) {
+                ProgressBar progressBar = findViewById(R.id.progressbar);
+                progressBar.setVisibility(View.INVISIBLE);
+                ((Button)findViewById(R.id.connectButton)).setEnabled(true);
+
+                e.printStackTrace();
+                Log.e(
+                        "SSHTUN",
+                        e.getClass().getName().toString() +
+                                " - " +
+                                e.getMessage().toString());
+                showSnackbar("Failed to establish connection: " + e.getMessage().toString());
+            }
+        };
 
         setOnclickListeners();
         inflateViews();
@@ -100,42 +135,16 @@ public class MainActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 view.setEnabled(false);
 
-                Host host = new Host(
-                        sharedPref.getString("Host", ""),
-                        sharedPref.getString("User", ""),
-                        sharedPref.getString("Password", ""),
-                        Integer.parseInt(sharedPref.getString("Port", "")));
+                // TODO: Set from onClickListener of ListItem and update sharedPref only when needed
+                con.user = sharedPref.getString(getString(R.string.user), "");
+                con.host = sharedPref.getString(getString(R.string.host), "");
+                con.port = Integer.parseInt(sharedPref.getString(getString(R.string.port), ""));
+                con.lport = Integer.parseInt(sharedPref.getString(getString(R.string.local_port), ""));
+                con.rhost = sharedPref.getString(getString(R.string.remote_host), "");
+                con.rport = Integer.parseInt(sharedPref.getString(getString(R.string.remote_port), ""));
+                con.password = sharedPref.getString(getString(R.string.password), "");
 
-                con = new Connection(host) {
-                    @Override
-                    public void onPortForwardSuccess(int assigned_port) {
-                        ProgressBar progressBar = findViewById(R.id.progressbar);
-                        progressBar.setVisibility(View.INVISIBLE);
-                        view.setEnabled(true);
-
-                        showSnackbar("Established connection on local port " + assigned_port);
-                    }
-
-                    @Override
-                    public void onPortForwardFail(Exception e) {
-                        ProgressBar progressBar = findViewById(R.id.progressbar);
-                        progressBar.setVisibility(View.INVISIBLE);
-                        view.setEnabled(true);
-
-                        e.printStackTrace();
-                        Log.e(
-                                "SSHTUN",
-                                e.getClass().getName().toString() +
-                                        " - " +
-                                        e.getMessage().toString());
-                        showSnackbar("Failed to establish connection");
-                    }
-                };
-
-                con.PortForward(
-                        Integer.parseInt(sharedPref.getString("Local Port", "")),
-                        sharedPref.getString("Remote Host", ""),
-                        Integer.parseInt(sharedPref.getString("Remote Port", "")));
+                con.PortForward();
             }
         });
     }
@@ -208,6 +217,49 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity.this.getLayoutInflater().inflate(
                                 R.layout.frame_dialog_private_key, null);
 
+                if (MainActivity.this.con.keyFileName != null) {
+                    ((TextView)dialogView.findViewById(R.id.textView)).setText(MainActivity.this.con.keyFileName);
+                }
+
+                dialogView.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        // TODO: Add callback so that user doesn't need to click twice
+                        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            // Permission is not granted
+                            ActivityCompat.requestPermissions(
+                                    MainActivity.this,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+                        } else {
+                            FileChooser fc = new FileChooser(MainActivity.this);
+                            fc.setFileListener(new FileChooser.FileSelectedListener() {
+                                @Override
+                                public void fileSelected(File file) {
+                                    Log.d("SSHTUN", "Selected file " + file.toString());
+
+                                    byte[] bytes = new byte[(int) file.length()];
+                                    try {
+                                        BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+                                        buf.read(bytes, 0, bytes.length);
+                                        buf.close();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    MainActivity.this.con.privateKey = bytes;
+                                    MainActivity.this.con.keyFileName = file.getName();
+                                    ((TextView) dialogView.findViewById(R.id.textView)).setText(file.getName());
+                                }
+                            });
+                            fc.showDialog();
+                        }
+                    }
+                });
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder
                         .setTitle(ListItem.this.tag)
@@ -217,7 +269,15 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
-                        });
+                        })
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                // TODO: Save file contents here instead
+                                dialog.cancel();
+                            }
+                });
                 builder.show();
             }
         };
