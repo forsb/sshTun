@@ -1,0 +1,14 @@
+<resources>
+    <declare-styleable name="ListItem">
+        <attr name="tag" format="string" />
+        <attr name="type" format="enum">
+            <enum name="value" value="0"/>
+            <enum name="file" value="1"/>
+        </attr>
+
+    </declare-styleable>
+    <declare-styleable name="ListHeading">
+        <attr name="label" format="string" />
+    </declare-styleable>
+</resources>
+

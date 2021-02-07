@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5"
-    tools:context="nu.forsby.filip.sshtun.MainActivity">
+    tools:context="nu.forsby.filip.sshtun.MainActivity"
+    xmlns:custom="http://schemas.android.com/apk/res-auto">
 
 
     <android.support.v7.widget.Toolbar
@@ -37,6 +38,70 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <nu.forsby.filip.sshtun.ListHeading
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:label="SSH CONNECTION" />
+
+                <nu.forsby.filip.sshtun.ListItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tag="@string/user"
+                    custom:type="value" />
+
+                <nu.forsby.filip.sshtun.ListItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tag="@string/host"
+                    custom:type="value" />
+
+                <nu.forsby.filip.sshtun.ListItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tag="@string/port"
+                    custom:type="value" />
+
+                <nu.forsby.filip.sshtun.ListHeading
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:label="LOCAL PORT PARAMETERS" />
+
+                <nu.forsby.filip.sshtun.ListItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tag="@string/local_port"
+                    custom:type="value" />
+
+                <nu.forsby.filip.sshtun.ListItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tag="@string/remote_host"
+                    custom:type="value" />
+
+                <nu.forsby.filip.sshtun.ListItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tag="@string/remote_port"
+                    custom:type="value" />
+
+                <nu.forsby.filip.sshtun.ListHeading
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:label="SECURITY SETTINGS" />
+
+                <nu.forsby.filip.sshtun.ListItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tag="@string/password"
+                    custom:type="value" />
+
+                <nu.forsby.filip.sshtun.ListItem
+                    android:id="@+id/private_key_list_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tag="@string/private_key"
+                    custom:type="file" />
+
             </LinearLayout>
 
         </ScrollView>
@@ -65,7 +130,7 @@
                 android:id="@+id/connectButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Connect"
+                android:text="@string/connect_button_text"
                 android:layout_marginHorizontal="15dp"
                 android:layout_marginVertical="15dp"
                 android:background="@drawable/button_effect"

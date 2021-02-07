@@ -5,12 +5,6 @@
     android:orientation="vertical"
     android:paddingHorizontal="?dialogPreferredPadding">
 
-    <Switch
-        android:id="@+id/switch1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Enabled" />
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
