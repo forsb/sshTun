@@ -26,7 +26,8 @@ import java.io.InputStream;
 public class MainActivity extends AppCompatActivity implements PortForwardTask.PortForwardResultListener {
 
     public static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 1337;
-    public static final int FILE_CHOOSER_RESULT_REQUEST_CODE = 1234;
+    public static final int PRIVATE_KEY_CHOOSER_RESULT_REQUEST_CODE = 1234;
+    public static final int PUBLIC_KEY_CHOOSER_RESULT_REQUEST_CODE = 2345;
 
     private View fRootView;
     private PreferenceWrapper fPrefsWrapper;
@@ -108,37 +109,58 @@ public class MainActivity extends AppCompatActivity implements PortForwardTask.P
         showSnackbar("Failed to establish connection: " + e.getMessage());
     }
 
+    private void onSshKeyPicked(int requestCode, Intent data) {
+        // Get the Uri of the selected file
+        Uri uri = data.getData();
+        String fileName = getFileName(uri);
+
+        int viewId;
+        if (requestCode == PRIVATE_KEY_CHOOSER_RESULT_REQUEST_CODE) {
+            viewId = R.id.private_key_list_item;
+            fPrefsWrapper.set("Private Key", fileName);
+        } else if (requestCode == PUBLIC_KEY_CHOOSER_RESULT_REQUEST_CODE) {
+            viewId = R.id.public_key_list_item;
+            fPrefsWrapper.set("Public Key", fileName);
+        } else {
+            return;
+        }
+
+        ListItem li = findViewById(viewId);
+        ((TextView) li.findViewById(R.id.value)).setText(fileName);
+
+        try (InputStream inputStream = getContentResolver().openInputStream(uri);) {
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int nRead;
+            byte[] bytes = new byte[1024];
+            while ((nRead = inputStream.read(bytes, 0, bytes.length)) != -1) {
+                buffer.write(bytes, 0, nRead);
+            }
+
+            buffer.flush();
+            if (requestCode == PRIVATE_KEY_CHOOSER_RESULT_REQUEST_CODE) {
+                fPrefsWrapper.setPrivateKey(buffer.toByteArray());
+            } else if (requestCode == PUBLIC_KEY_CHOOSER_RESULT_REQUEST_CODE) {
+                fPrefsWrapper.setPublicKey(buffer.toByteArray());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case FILE_CHOOSER_RESULT_REQUEST_CODE:
+            case PRIVATE_KEY_CHOOSER_RESULT_REQUEST_CODE:
+            case PUBLIC_KEY_CHOOSER_RESULT_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    // Get the Uri of the selected file
-                    Uri uri = data.getData();
-
-                    ListItem li = findViewById(R.id.private_key_list_item);
-                    ((TextView) li.findViewById(R.id.value)).setText(getFileName(uri));
-
-                    try (InputStream inputStream = getContentResolver().openInputStream(uri);) {
-                        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                        int nRead;
-                        byte[] bytes = new byte[1024];
-                        while ((nRead = inputStream.read(bytes, 0, bytes.length)) != -1) {
-                            buffer.write(bytes, 0, nRead);
-                        }
-
-                        buffer.flush();
-                        fPrefsWrapper.setPrivateKeyBytes(buffer.toByteArray());
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    onSshKeyPicked(requestCode, data);
                 }
                 break;
             case WRITE_EXTERNAL_STORAGE_REQUEST_CODE:
                 break;
             default:
-                Log.i("SSHTUN", "Unhandled request code: " + requestCode);
+                Log.w("SSHTUN", "Unhandled request code: " + requestCode);
         }
     }
 

@@ -102,6 +102,19 @@
                     custom:tag="@string/private_key"
                     custom:type="file" />
 
+                <nu.forsby.filip.sshtun.ListItem
+                    android:id="@+id/public_key_list_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tag="@string/public_key"
+                    custom:type="file" />
+
+                <nu.forsby.filip.sshtun.ListItem
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tag="@string/key_password"
+                    custom:type="value" />
+
             </LinearLayout>
 
         </ScrollView>

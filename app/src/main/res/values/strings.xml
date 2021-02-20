@@ -14,6 +14,8 @@
 
     <string name="password">Password</string>
     <string name="private_key">Private Key</string>
+    <string name="public_key">Public Key</string>
+    <string name="key_password">Key Password</string>
 
     <string name="action_about">About</string>
     <string name="action_settings">Settings</string>

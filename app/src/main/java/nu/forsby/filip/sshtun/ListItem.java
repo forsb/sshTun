@@ -65,7 +65,7 @@ public class ListItem extends FrameLayout implements ValuePicker.ValueSelectedLi
         valueView.setText(value);
     }
 
-    private void showFileChooser() {
+    private void showFileChooser(int requestCode) {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -73,7 +73,7 @@ public class ListItem extends FrameLayout implements ValuePicker.ValueSelectedLi
         try {
             fActivity.startActivityForResult(
                     Intent.createChooser(intent, "Select a file"),
-                    MainActivity.FILE_CHOOSER_RESULT_REQUEST_CODE);
+                    requestCode);
         } catch (android.content.ActivityNotFoundException ignored) {
             // ignore, for now
         }
@@ -94,7 +94,11 @@ public class ListItem extends FrameLayout implements ValuePicker.ValueSelectedLi
                 setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showFileChooser();
+                        if (view.getId() == R.id.private_key_list_item) {
+                            showFileChooser(MainActivity.PRIVATE_KEY_CHOSER_RESULT_REQUEST_CODE);
+                        } else if (view.getId() == R.id.public_key_list_item) {
+                            showFileChooser(MainActivity.PUBLIC_KEY_CHOSER_RESULT_REQUEST_CODE);
+                        }
                     }
                 });
                 break;
@@ -106,7 +110,6 @@ public class ListItem extends FrameLayout implements ValuePicker.ValueSelectedLi
 
     @Override
     public void valueSelected(String value) {
-
         fPrefs.edit().putString(fTag, value).apply();
         updateValue(value);
     }

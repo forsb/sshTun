@@ -47,7 +47,8 @@ public class PortForwardTask extends AsyncTask<Void, Void, Integer> {
     }
 
     private int portForward() throws JSchException {
-        Session session =  new JSch().getSession(
+        JSch jsch = new JSch();
+        Session session =  jsch.getSession(
                 fPrefs.getString("User"),
                 fPrefs.getString("Host"),
                 fPrefs.getInt("Port"));
@@ -55,6 +56,16 @@ public class PortForwardTask extends AsyncTask<Void, Void, Integer> {
         java.util.Properties config = new java.util.Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
+
+        byte[] privateKey = fPrefs.getPrivateKey();
+        byte[] publicKey = fPrefs.getPublicKey();
+
+        String keyPassword = fPrefs.getString("Key Password");
+        if (keyPassword == null) {
+            keyPassword = "";
+        }
+
+        jsch.addIdentity("key_name", privateKey, publicKey, keyPassword.getBytes());
 
         String password = fPrefs.getString("Password");
         if (!password.isEmpty()) {
@@ -67,5 +78,4 @@ public class PortForwardTask extends AsyncTask<Void, Void, Integer> {
                 fPrefs.getString("Remote Host"),
                 fPrefs.getInt("Remote Port"));
     }
-
 }
