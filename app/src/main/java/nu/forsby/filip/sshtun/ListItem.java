@@ -8,9 +8,13 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ListItem extends FrameLayout implements ValuePicker.ValueSelectedListener {
+
+    private static final int VALUE_TYPE = 0;
+    private static final int FILE_TYPE = 1;
 
     private String fTag;
     private int fType;
@@ -63,6 +67,12 @@ public class ListItem extends FrameLayout implements ValuePicker.ValueSelectedLi
     private void updateValue(String value) {
         TextView valueView = findViewById(R.id.value);
         valueView.setText(value);
+
+        if (fType == FILE_TYPE) {
+            int resourceId = value.equals("") ? R.drawable.ic_chevron_right_black_24dp : R.drawable.ic_clear_black_24dp;
+            ((ImageView) findViewById(R.id.image)).setImageResource(resourceId);
+        }
+
     }
 
     private void showFileChooser(int requestCode) {
@@ -87,18 +97,25 @@ public class ListItem extends FrameLayout implements ValuePicker.ValueSelectedLi
         updateValue(fPrefs.getString(fTag, ""));
 
         switch (fType) {
-            case 0:
+            case VALUE_TYPE:
                 setOnClickListener(new ValuePicker(fTag, this));
                 break;
-            case 1:
+            case FILE_TYPE:
                 setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (view.getId() == R.id.private_key_list_item) {
-                            showFileChooser(MainActivity.PRIVATE_KEY_CHOSER_RESULT_REQUEST_CODE);
-                        } else if (view.getId() == R.id.public_key_list_item) {
-                            showFileChooser(MainActivity.PUBLIC_KEY_CHOSER_RESULT_REQUEST_CODE);
+                        TextView valueView = findViewById(R.id.value);
+                        CharSequence value = valueView.getText();
+                        if (value.length() == 0) {
+                            if (view.getId() == R.id.private_key_list_item) {
+                                showFileChooser(MainActivity.PRIVATE_KEY_CHOOSER_RESULT_REQUEST_CODE);
+                            } else if (view.getId() == R.id.public_key_list_item) {
+                                showFileChooser(MainActivity.PUBLIC_KEY_CHOOSER_RESULT_REQUEST_CODE);
+                            }
+                        } else {
+                            valueSelected("");
                         }
+
                     }
                 });
                 break;

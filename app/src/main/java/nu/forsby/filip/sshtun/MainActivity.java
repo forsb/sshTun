@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements PortForwardTask.P
         Uri uri = data.getData();
         String fileName = getFileName(uri);
 
+
         int viewId;
         if (requestCode == PRIVATE_KEY_CHOOSER_RESULT_REQUEST_CODE) {
             viewId = R.id.private_key_list_item;
@@ -124,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements PortForwardTask.P
         } else {
             return;
         }
+
+        ((ImageView) (findViewById(viewId).findViewById(R.id.image))).setImageResource(R.drawable.ic_clear_black_24dp);
 
         ListItem li = findViewById(viewId);
         ((TextView) li.findViewById(R.id.value)).setText(fileName);
